@@ -11,9 +11,10 @@ import { PRODUCT_CONFIGS } from '../constants';
 
 interface SceneProps {
   activeState: ProductState;
+  isScanning: boolean;
 }
 
-const Scene: React.FC<SceneProps> = ({ activeState }) => {
+const Scene: React.FC<SceneProps> = ({ activeState, isScanning }) => {
   const config = PRODUCT_CONFIGS[activeState];
 
   return (
@@ -21,7 +22,7 @@ const Scene: React.FC<SceneProps> = ({ activeState }) => {
       dpr={[1, 2]} 
       shadows 
       gl={{ 
-        antialias: false, // Turned off for post-processing performance
+        antialias: false, 
         powerPreference: "high-performance",
         stencil: false,
         depth: true
@@ -43,7 +44,7 @@ const Scene: React.FC<SceneProps> = ({ activeState }) => {
       
       <Suspense fallback={null}>
         <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
-          <ProductDisplay activeState={activeState} />
+          <ProductDisplay activeState={activeState} isScanning={isScanning} />
         </Float>
         
         <OrbitalElements activeState={activeState} />
@@ -60,13 +61,11 @@ const Scene: React.FC<SceneProps> = ({ activeState }) => {
         
         <Environment preset="studio" />
         
-        {/* Production Cinematic Post-Processing */}
-        {/* Fix: Replaced deprecated disableNormalPass with enableNormalPass={false} as per TypeScript error suggestion */}
         <EffectComposer enableNormalPass={false}>
           <Bloom 
             luminanceThreshold={0.2} 
             mipmapBlur 
-            intensity={1.2} 
+            intensity={isScanning ? 2.5 : 1.2} // Increase bloom during scan
             radius={0.4}
           />
           <Noise opacity={0.02} />
