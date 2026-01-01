@@ -1,7 +1,4 @@
-
 import { GoogleGenAI, Type } from "@google/genai";
-
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 export interface ProductDiagnostic {
   specs: {
@@ -14,6 +11,9 @@ export interface ProductDiagnostic {
 }
 
 export const generateProductDiagnostic = async (productName: string, tagline: string): Promise<ProductDiagnostic> => {
+  // Always create a new instance right before the call to ensure fresh API key usage
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+
   try {
     const response = await ai.models.generateContent({
       model: "gemini-3-pro-preview",
@@ -50,7 +50,7 @@ export const generateProductDiagnostic = async (productName: string, tagline: st
     return JSON.parse(text);
   } catch (error) {
     console.error("AI Diagnostic failed:", error);
-    // Fallback data
+    // Fallback data for robust UI
     return {
       specs: [
         { label: "Core Flux", value: "0.82", unit: "THz" },

@@ -1,4 +1,3 @@
-
 import React, { Suspense } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, PerspectiveCamera, Environment, ContactShadows, Float } from '@react-three/drei';
@@ -24,9 +23,11 @@ const Scene: React.FC<SceneProps> = ({ activeState, isScanning }) => {
       gl={{ 
         antialias: false, 
         powerPreference: "high-performance",
+        alpha: true,
         stencil: false,
         depth: true
       }}
+      className="w-full h-full"
     >
       <PerspectiveCamera makeDefault position={[0, 0, 10]} fov={45} />
       
@@ -61,11 +62,11 @@ const Scene: React.FC<SceneProps> = ({ activeState, isScanning }) => {
         
         <Environment preset="studio" />
         
-        <EffectComposer enableNormalPass={false}>
+        <EffectComposer multisampling={0}>
           <Bloom 
             luminanceThreshold={0.2} 
             mipmapBlur 
-            intensity={isScanning ? 2.5 : 1.2} // Increase bloom during scan
+            intensity={isScanning ? 2.5 : 1.2} 
             radius={0.4}
           />
           <Noise opacity={0.02} />
